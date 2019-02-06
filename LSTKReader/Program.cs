@@ -21,10 +21,10 @@ namespace LSTKReader
             {
                 DateTime now = DateTime.Now.AddMinutes(VALID_TIME_IN_MINUTES);
                 // Get all messages
-                IEnumerable<uint> uids = Client.Search(SearchCondition.All());
-                IEnumerable<MailMessage> messages = Client.GetMessages(uids);
-                foreach (MailMessage message in messages)
+                IEnumerable<uint> uids = Client.Search(SearchCondition.Undeleted());
+                foreach (uint uid in uids)
                 {
+                    MailMessage message = Client.GetMessage(uid);
                     DateTime? messageDateTime = message.Date();
                     // Check if message is valid
                     if (message.Subject == "ELR-Mail" && messageDateTime.HasValue && DateTime.Compare(messageDateTime.Value, now) <= 0)
@@ -43,6 +43,7 @@ namespace LSTKReader
                             }
                         }
                     }
+                    Client.DeleteMessage(uid);
                 }
             }
         }
