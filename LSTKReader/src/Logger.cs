@@ -8,24 +8,42 @@ namespace LSTKReader
 {
     class Logger
     {
+        static readonly ApplicationConfiguration CONFIG = ApplicationConfiguration.getConfig();
+
         public static void error(string message)
         {
-            log(LogType.ERROR, message);
-        }
-
-        public static void info(string message)
-        {
-            log(LogType.INFO, message);
-        }
-
-        public static void debug(string message)
-        {
-            log(LogType.DEBUG, message);
+            string[] allowedLevels = { "debug", "info", "warning", "error" };
+            if (allowedLevels.Contains(CONFIG.Loglevel))
+            {
+                log(LogType.ERROR, message);
+            }
         }
 
         public static void warning(string message)
         {
-            log(LogType.WARNING, message);
+            string[] allowedLevels = { "debug", "info", "warning" };
+            if (allowedLevels.Contains(CONFIG.Loglevel))
+            {
+                log(LogType.WARNING, message);
+            }
+        }
+
+        public static void info(string message)
+        {
+            string[] allowedLevels = { "debug", "info" };            
+            if (allowedLevels.Contains(CONFIG.Loglevel))
+            {
+                log(LogType.INFO, message);
+            }
+        }
+
+        public static void debug(string message)
+        {
+            string[] allowedLevels = { "debug" };
+            if (allowedLevels.Contains(CONFIG.Loglevel))
+            {
+                log(LogType.DEBUG, message);
+            }
         }
 
         private static void log(LogType logType, string message)

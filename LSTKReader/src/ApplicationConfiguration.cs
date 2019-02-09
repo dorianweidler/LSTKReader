@@ -12,12 +12,16 @@ namespace LSTKReader
     {
         private static ApplicationConfiguration _instance = null;
 
+        // general config
+        private string loglevel;
+
         // email config
         private string emailHostname;
         private int emailPort;
         private string emailUsername;
         private string emailPassword;
         private bool emailUseSSL;
+        private List<string> allowedSenders = new List<string>();
 
         // processing config
         private int alarmmailLifetime;
@@ -40,6 +44,8 @@ namespace LSTKReader
         public string AlarmProgramPath { get => alarmProgramPath; set => alarmProgramPath = value; }
         public string NoAlarmmailDefaultAlarmtext { get => noAlarmmailDefaultAlarmtext; set => noAlarmmailDefaultAlarmtext = value; }
         public bool LegacyProcessing { get => legacyProcessing; set => legacyProcessing = value; }
+        public string Loglevel { get => loglevel; set => loglevel = value; }
+        public List<string> AllowedSenders { get => allowedSenders; set => allowedSenders = value; }
 
         public static ApplicationConfiguration getConfig()
         {
@@ -54,6 +60,9 @@ namespace LSTKReader
         {
             var iniParser = new FileIniDataParser();
             IniData data = iniParser.ReadFile(fileName);
+
+            // general config
+            loglevel = data["General"]["loglevel"];
 
             // email config
             emailHostname = data["Email"]["hostname"];
@@ -71,6 +80,12 @@ namespace LSTKReader
 
             // extras config
             noAlarmmailDefaultAlarmtext = data["Extras"]["noAlarmmailDefaultAlarmtext"];
+
+            // allowed senders
+            foreach (KeyData allowedSender in data["AllowedSenders"])
+            {
+                AllowedSenders.Add(allowedSender.Value);
+            }
 
         }
     }
