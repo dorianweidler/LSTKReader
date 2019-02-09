@@ -26,6 +26,7 @@ namespace LSTKReader
         private string meldender;
         private string telefon;
         private string einsatztext;
+        private DateTime empfangsZeitpunkt;
 
         public string Einsatznummer { get => einsatznummer; set => einsatznummer = value; }
         public string Strasse { get => strasse; set => strasse = value; }
@@ -44,6 +45,7 @@ namespace LSTKReader
         public string Meldender { get => meldender; set => meldender = value; }
         public string Telefon { get => telefon; set => telefon = value; }
         public string Einsatztext { get => einsatztext; set => einsatztext = value; }
+        public DateTime EmpfangsZeitpunkt { get => empfangsZeitpunkt; set => empfangsZeitpunkt = value; }
 
         public Einsatz()
         {
