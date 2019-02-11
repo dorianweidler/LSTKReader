@@ -35,9 +35,7 @@ namespace LSTKReader
             Console.WriteLine(einsatz);
 
             IAlarmProcess alarmProcess = new AlarmProcessFactory().GetAlarmProcess();
-            //alarmProcess.process(alarmcode, einsatz);
-
-            Console.ReadKey();
+            alarmProcess.process(alarmcode, einsatz);
         }  
     }
 }
