@@ -32,8 +32,12 @@ namespace LSTKReader
             IAlarmReader alarmReader = new EmailAlarmReader();
             Einsatz einsatz = alarmReader.readAlarmData();
 
+            Console.WriteLine(einsatz);
+
             IAlarmProcess alarmProcess = new AlarmProcessFactory().GetAlarmProcess();
-            alarmProcess.process(alarmcode, einsatz);
+            //alarmProcess.process(alarmcode, einsatz);
+
+            Console.ReadKey();
         }  
     }
 }

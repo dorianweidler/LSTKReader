@@ -3,6 +3,7 @@ using IniParser.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -59,7 +60,8 @@ namespace LSTKReader
         private ApplicationConfiguration(string fileName)
         {
             var iniParser = new FileIniDataParser();
-            IniData data = iniParser.ReadFile(fileName);
+            Console.WriteLine(System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\" + fileName);
+            IniData data = iniParser.ReadFile(System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\" + fileName);
 
             // general config
             loglevel = data["General"]["loglevel"];

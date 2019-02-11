@@ -76,11 +76,16 @@ namespace LSTKReader
                 string fieldValue = field.Attribute("value").Value;
 
                 System.Reflection.PropertyInfo propertyInfo = einsatz.GetType().GetProperty(fieldName.First().ToString().ToUpper() + fieldName.Substring(1).ToLower());
-                propertyInfo.SetValue(einsatz, Convert.ChangeType(fieldValue, propertyInfo.PropertyType), null);
+                propertyInfo.SetValue(einsatz, Convert.ChangeType(replaceUmlauts(fieldValue), propertyInfo.PropertyType), null);
             }
 
 
             return einsatz;
+        }
+
+        public static string replaceUmlauts(string text)
+        {
+            return text.Replace("ä", "ae").Replace("ö", "oe").Replace("ü", "ue").Replace("Ä", "Ae").Replace("Ö", "Oe").Replace("Ü", "Ue").Replace("ß", "ss");
         }
     }
 }
