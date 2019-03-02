@@ -13,6 +13,7 @@ namespace LSTKReader.AlarmReading
     class EmailAlarmReader : IAlarmReader
     {
         static readonly ApplicationConfiguration CONFIG = ApplicationConfiguration.getConfig();
+        static readonly Logger logger = Logger.GetInstance();
 
         Einsatz IAlarmReader.readAlarmData()
         {
@@ -24,7 +25,7 @@ namespace LSTKReader.AlarmReading
                 einsatz = readMails();
                 if (einsatz == null)
                 {
-                    Logger.info("Found no Einsatz. Checking again in " + CONFIG.SleepBetweenChecks + "ms.");
+                    logger.info("Found no Einsatz. Checking again in " + CONFIG.SleepBetweenChecks + "ms.");
                     Thread.Sleep(CONFIG.SleepBetweenChecks);
                 }
             } while (DateTime.Compare(DateTime.Now, endTime) <= 0 && einsatz == null);
@@ -37,10 +38,10 @@ namespace LSTKReader.AlarmReading
             // Connect and login
             using (ImapClient Client = new ImapClient(CONFIG.EmailHostname, CONFIG.EmailPort, CONFIG.EmailUsername, CONFIG.EmailPassword, AuthMethod.Login, CONFIG.EmailUseSSL))
             {
-                Logger.info("Retreiving emails.");
+                logger.info("Retreiving emails.");
                 // Get all messages
                 IEnumerable<uint> uids = Client.Search(SearchCondition.Undeleted());
-                Logger.debug("Found " + uids.Count() + " possible matches.");
+                logger.debug("Found " + uids.Count() + " possible matches.");
 
                 IList<Einsatz> einsaetze = new List<Einsatz>();
 
@@ -76,7 +77,7 @@ namespace LSTKReader.AlarmReading
                 try
                 {
                     Einsatz currentEinsatz = einsaetze.OrderByDescending(e => e.EmpfangsZeitpunkt).First();
-                    Logger.info("Aktuellster Einsatz: " + currentEinsatz);
+                    logger.info("Aktuellster Einsatz: " + currentEinsatz);
                     return currentEinsatz;
                 }
                 catch (InvalidOperationException)

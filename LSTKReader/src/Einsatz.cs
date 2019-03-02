@@ -75,7 +75,7 @@ namespace LSTKReader
                 string fieldName = field.Attribute("name").Value;
                 string fieldValue = field.Attribute("value").Value;
 
-                System.Reflection.PropertyInfo propertyInfo = einsatz.GetType().GetProperty(fieldName.First().ToString().ToUpper() + fieldName.Substring(1).ToLower());
+                PropertyInfo propertyInfo = einsatz.GetType().GetProperty(fieldName.First().ToString().ToUpper() + fieldName.Substring(1).ToLower());
                 propertyInfo.SetValue(einsatz, Convert.ChangeType(replaceUmlauts(fieldValue), propertyInfo.PropertyType), null);
             }
 

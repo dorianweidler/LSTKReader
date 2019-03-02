@@ -10,6 +10,7 @@ namespace LSTKReader.AlarmProcessing
     class LegacyAlarmProcess : IAlarmProcess
     {
         static readonly ApplicationConfiguration CONFIG = ApplicationConfiguration.getConfig();
+        static readonly Logger logger = Logger.GetInstance();
 
         public void process(string alarmcode, Einsatz einsatz)
         {
@@ -17,7 +18,7 @@ namespace LSTKReader.AlarmProcessing
             if (einsatz == null)
             {
                 // No Alarmmail found
-                Logger.info("No matching alarmmail found within " + CONFIG.WaitTimeBeforeAlarmWithoutMail + "s. Alarm without data!");
+                logger.info("No matching alarmmail found within " + CONFIG.WaitTimeBeforeAlarmWithoutMail + "s. Alarm without data!");
                 alarmtext = CONFIG.NoAlarmmailDefaultAlarmtext;
             }
             else

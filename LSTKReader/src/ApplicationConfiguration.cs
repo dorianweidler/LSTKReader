@@ -25,7 +25,7 @@ namespace LSTKReader
         private List<string> allowedSenders = new List<string>();
 
         // processing config
-        private int alarmmailLifetime;
+        private long alarmmailLifetime;
         private int waitTimeBeforeAlarmWithoutMail;
         private int sleepBetweenChecks;
         private string alarmProgramPath;
@@ -39,7 +39,7 @@ namespace LSTKReader
         public string EmailUsername { get => emailUsername; set => emailUsername = value; }
         public string EmailPassword { get => emailPassword; set => emailPassword = value; }
         public bool EmailUseSSL { get => emailUseSSL; set => emailUseSSL = value; }
-        public int AlarmmailLifetime { get => alarmmailLifetime; set => alarmmailLifetime = value; }
+        public long AlarmmailLifetime { get => alarmmailLifetime; set => alarmmailLifetime = value; }
         public int WaitTimeBeforeAlarmWithoutMail { get => waitTimeBeforeAlarmWithoutMail; set => waitTimeBeforeAlarmWithoutMail = value; }
         public int SleepBetweenChecks { get => sleepBetweenChecks; set => sleepBetweenChecks = value; }
         public string AlarmProgramPath { get => alarmProgramPath; set => alarmProgramPath = value; }
