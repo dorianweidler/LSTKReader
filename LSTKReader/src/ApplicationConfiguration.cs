@@ -30,6 +30,7 @@ namespace LSTKReader
         private int sleepBetweenChecks;
         private string alarmProgramPath;
         private bool legacyProcessing;
+        private string zipPassword;
 
         // extras config
         private string noAlarmmailDefaultAlarmtext;
@@ -47,6 +48,7 @@ namespace LSTKReader
         public bool LegacyProcessing { get => legacyProcessing; set => legacyProcessing = value; }
         public string Loglevel { get => loglevel; set => loglevel = value; }
         public List<string> AllowedSenders { get => allowedSenders; set => allowedSenders = value; }
+        public string ZipPassword { get => zipPassword; set => zipPassword = value; }
 
         public static ApplicationConfiguration getConfig()
         {
@@ -74,11 +76,12 @@ namespace LSTKReader
             emailUseSSL = bool.Parse(data["Email"]["useSSL"]);
 
             // processing config
-            alarmmailLifetime = int.Parse(data["Processing"]["alarmmailLifetime"]);
+            alarmmailLifetime = long.Parse(data["Processing"]["alarmmailLifetime"]);
             waitTimeBeforeAlarmWithoutMail = int.Parse(data["Processing"]["waitTimeBeforeAlarmWithoutMail"]);
             sleepBetweenChecks = int.Parse(data["Processing"]["sleepBetweenChecks"]);
             alarmProgramPath = data["Processing"]["alarmProgramPath"];
             legacyProcessing = bool.Parse(data["Processing"]["legacyProcessing"]);
+            zipPassword = data["Processing"]["zipPassword"];
 
             // extras config
             noAlarmmailDefaultAlarmtext = data["Extras"]["noAlarmmailDefaultAlarmtext"];

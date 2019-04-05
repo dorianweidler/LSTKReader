@@ -1,6 +1,8 @@
-﻿using S22.Imap;
+﻿using Ionic.Zip;
+using S22.Imap;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
@@ -33,6 +35,14 @@ namespace LSTKReader.AlarmReading
             return einsatz;
         }
 
+        private Einsatz getEinsatzFromStream(Stream stream, DateTime empfangsZeit)
+        {
+            XDocument xdocument = XDocument.Load(stream);
+            Einsatz einsatz = Einsatz.FromLeitstellenXml(xdocument);
+            einsatz.EmpfangsZeitpunkt = empfangsZeit;
+            return einsatz;
+        }
+
         private Einsatz readMails()
         {
             // Connect and login
@@ -49,7 +59,6 @@ namespace LSTKReader.AlarmReading
                 {
                     MailMessage message = Client.GetMessage(uid);
                     DateTime? messageDateTime = message.Date();
-                    
                     // Check if message is valid
                     if (CONFIG.AllowedSenders.Contains(message.From.Address) && message.Attachments.Count > 0 && messageDateTime.HasValue && DateTime.Compare(messageDateTime.Value.AddSeconds(CONFIG.AlarmmailLifetime), DateTime.Now) >= 0)
                     {
@@ -61,11 +70,26 @@ namespace LSTKReader.AlarmReading
                             if (attachment.ContentType.MediaType == "text/plain" && attachment.ContentType.Name.ToString().StartsWith("Alarmdruck"))
                             {
                                 // Generate einsatz from document
-                                XDocument xdocument = XDocument.Load(attachment.ContentStream);
-                                Einsatz einsatz = Einsatz.FromLeitstellenXml(xdocument);
-                                einsatz.EmpfangsZeitpunkt = messageDateTime.Value;
-                                einsaetze.Add(einsatz);
+                                einsaetze.Add(getEinsatzFromStream(attachment.ContentStream, messageDateTime.Value));
                             }
+
+                            else if(attachment.ContentType.MediaType == "application/zip")
+                            {
+                                // encrypted zip!
+                                ZipFile zip = ZipFile.Read(attachment.ContentStream);
+                                foreach (ZipEntry entry in zip)
+                                {
+                                    if(entry.FileName.StartsWith("Alarmdruck"))
+                                    {
+                                        MemoryStream ms = new MemoryStream();
+                                        entry.ExtractWithPassword(ms, CONFIG.ZipPassword);
+                                        ms.Seek(0, SeekOrigin.Begin);
+                                        einsaetze.Add(getEinsatzFromStream(ms, messageDateTime.Value));
+                                    }
+                                }
+                            }
+
+                            
                         }
                     }
                     else
