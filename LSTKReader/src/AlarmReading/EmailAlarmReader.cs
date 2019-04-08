@@ -6,8 +6,10 @@ using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace LSTKReader.AlarmReading
@@ -37,10 +39,32 @@ namespace LSTKReader.AlarmReading
 
         private Einsatz getEinsatzFromStream(Stream stream, DateTime empfangsZeit)
         {
-            XDocument xdocument = XDocument.Load(stream);
+            string einsatzXml = repairXml(new StreamReader(stream).ReadToEnd());
+            XDocument xdocument = XDocument.Parse(einsatzXml);
             Einsatz einsatz = Einsatz.FromLeitstellenXml(xdocument);
             einsatz.EmpfangsZeitpunkt = empfangsZeit;
             return einsatz;
+        }
+
+        public static string repairXml(string xml)
+        {
+            string[] lines = xml.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            string newXml = "";
+            foreach(string line in lines)
+            {
+                string newLine = line;
+                if(!String.IsNullOrWhiteSpace(line))
+                {
+                    string found = Regex.Match(line, "value=\".*\"").Groups[0].Value;
+                    if(!String.IsNullOrWhiteSpace(found))
+                    {
+                        string replaced = found.Replace(">", "&gt;").Replace("<", "&lt;");
+                        newLine = line.Replace(found, replaced);
+                    }
+                }
+                newXml += newLine;
+            }
+            return newXml;
         }
 
         private Einsatz readMails()
